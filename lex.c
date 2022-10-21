@@ -120,8 +120,8 @@ extern token_t next_tok (void)
     case '\n':  return bp++, ENDL;
     case ',':   return bp++, COMMA;
     case ':':   return bp++, COLON;
-    case ';':   return bp++, SEMICOLON;
-    case '#':   return bp++, SHARP;
+    case ';':   while (*bp++ != '\n'); return SEMICOLON;
+    case '#':   while (*bp++ != '\n'); return SHARP;
     case '(':   return bp++, BRA;
     case ')':   return bp++, KET;
     case '$':   return bp++, DOL;

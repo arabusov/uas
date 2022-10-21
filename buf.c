@@ -16,9 +16,12 @@ extern int read_buf (void)
 {
     int ch;
     memset (buf, 0, N_BUF);
+    bp = buf;
     while ((ch = getchar ()) != EOF) {
         if (ch != '\n' && (bp - buf) < N_BUF)
             *bp++ = ch;
+        else
+            break;
     }
     if (ch == '\n')
         *bp = '\n';
