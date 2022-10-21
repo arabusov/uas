@@ -1,3 +1,10 @@
+/*
+ * Temporary int main (void) file for tests
+ *
+ * Author: Andrei Rabusov <arabusov@gmail.com>
+ *         2022-10-22
+ */
+
 #include "lex.h"
 #include "buf.h"
 #include <stdio.h>

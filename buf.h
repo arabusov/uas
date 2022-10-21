@@ -1,3 +1,10 @@
+/*
+ * Buffer for x86 16 bit UNIX assembler
+ *
+ * Author: Andrei Rabusov <arabusov@gmail.com>
+ *         2022-10-22
+ */
+
 #ifndef _BUF_
 #define _BUF_
 

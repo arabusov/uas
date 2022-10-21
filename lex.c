@@ -1,4 +1,12 @@
 /*
+ * Lexer for x86 16 bit UNIX assembler
+ *
+ * Author: Andrei Rabusov <arabusov@gmail.com>
+ *         2022-10-22
+ */
+
+/*
+ * C&P from a wikibook on gas
  * seg:disp(base reg, index reg, scale factor)
  * label: movb $0x05, %al
  * seg:disp(base reg, index reg, scale factor)
