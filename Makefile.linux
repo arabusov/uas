@@ -1,0 +1,14 @@
+CC=gcc
+CFLAGS=-ansi -pedantic -Wall -Wextra -g -ggdb
+LD=$(CC)
+LDFLAGS=-g -ggdb
+
+SRC=$(shell echo *.c)
+OBJ=$(patsubst %.c, %.o, $(SRC))
+
+all: as
+as: $(OBJ)
+	$(LD) $(LDFLAGS) -o as $(OBJ)
+
+clean:
+	rm -f $(OBJ) as
