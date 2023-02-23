@@ -1,7 +1,7 @@
-%token OP REG SYSREG REG8 IMED CIMED DIRECT CDIRECT LAB COL LPAR RPAR COM
+%token OP REG SYSREG REG8 IMMED CIMMED DISP CDISP LAB COL LPAR RPAR COM NL
 %%
-statement   : LAB cmd '\n'
-            | cmd '\n'
+statement   : LAB cmd
+            | cmd
 
 cmd         : OP
             | OP arg
@@ -9,16 +9,16 @@ cmd         : OP
             | OP arg COM arg COM arg
 
 arg         : REG
-            | IMED
-            | CIMED
-            | DIRECT
-            | CDIRECT
+            | IMMED
+            | CIMMED
+            | DISP
+            | CDISP
             | modrm
 
 modrm       : SYSREG COL default_modrm
             | direct_modrm
-direct_modrm: DIRECT default_modrm
-            | CDIRECT default_modrm
+direct_modrm: DISP default_modrm
+            | CDISP default_modrm
 
 default_modrm
             : LPAR REG COM REG RPAR
@@ -33,7 +33,7 @@ extern int column;
 
 int main(void)
 {
-    yyparse();
+    return yyparse();
 }
 
 yyerror(s)

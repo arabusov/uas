@@ -8,6 +8,7 @@ FNAME   [a-zA-Z0-9\/\.]+
 #include "y.tab.h"
 int column=0;
 void count();
+#define W(T)    printf("tok %d {", (T)); ECHO; printf("} "); return (T);
 %}
 %%
 "# "{DEC}" "{FNAME}{CPPFL}*"\n"  {    printf("cpp %s\n", yytext); }
@@ -18,7 +19,7 @@ sub{ARGT}   |
 cmp{ARGT}   |
 push        |
 pop         |
-hlt         {   count(); return OP; }
+hlt         {   count(); W(OP); }
 
 \%ax        |
 \%bx        |
@@ -27,11 +28,11 @@ hlt         {   count(); return OP; }
 \%si        |
 \%di        |
 \%sp        |
-\%bp        {   count(); return REG;}
+\%bp        {   count(); W(REG); }
 \%cs        |
 \%ds        |
 \%ss        |
-\%es        {   count(); return SYSREG;; } 
+\%es        {   count(); W(SYSREG); } 
 \%al        |
 \%bl        |
 \%cl        |
@@ -39,31 +40,32 @@ hlt         {   count(); return OP; }
 \%ah        |
 \%bh        |
 \%ch        |
-\%dh        {   count(); return REG8; }
+\%dh        {   count(); W(REG8); }
 
-,           {   count(); return COM; }
+,           {   count(); W(COM); }
+"\n"        {   count(); W(NL); }
 
-"("         {   count(); return LPAR; }
+"("         {   count(); W(LPAR); }
 
-")"         {   count(); return RPAR; }
+")"         {   count(); W(RPAR); }
 
-\$[ \t]*{ID}    {   count(); return IMED; }
+\$[ \t]*{ID}    {   count(); W(IMMED); }
 \$[ \t]*{DEC}   |
-\$[ \t]*{HEX}   {   count(); return CIMED; }
+\$[ \t]*{HEX}   {   count(); W(CIMMED); }
 
-^[ \t]*{ID}[ \t]*":"  {   count(); return LAB; }
+^[ \t]*{ID}[ \t]*":"  {   count(); W(LAB); }
 
-{ID}        {   count(); return DIRECT; }
+{ID}        {   count(); W(DISP); }
 {DEC}       |
-{HEX}       {   count(); return CDIRECT; }
+{HEX}       {   count(); W(CDISP); }
 
-:           {   count(); return COL; }
+:           {   count(); W(COL); }
 
 ;.*
 !.*
 #.*
 
-[ \t\v\n\f] {   count(); }
+[ \t\v\f]   {   count(); }
 
 .           {   printf("scan error %d %s\n", column, yytext); }
 
@@ -81,5 +83,4 @@ void count()
 		else
 			column++;
 
-	ECHO;
 }
