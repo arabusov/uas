@@ -8,7 +8,7 @@ FNAME   [a-zA-Z0-9\/\.]+
 #include "y.tab.h"
 int column=0;
 void count();
-#define W(T)    printf("tok %d {", (T)); ECHO; printf("} "); return (T);
+#define W(T)  ECHO;  return (T);
 %}
 %%
 "# "{DEC}" "{FNAME}{CPPFL}*"\n"  {    printf("cpp %s\n", yytext); }
@@ -53,9 +53,7 @@ hlt         {   count(); W(OP); }
 \$[ \t]*{DEC}   |
 \$[ \t]*{HEX}   {   count(); W(CIMMED); }
 
-^[ \t]*{ID}[ \t]*":"  {   count(); W(LAB); }
-
-{ID}        {   count(); W(DISP); }
+{ID}        {   count(); W(IDENT); }
 {DEC}       |
 {HEX}       {   count(); W(CDISP); }
 
@@ -63,7 +61,6 @@ hlt         {   count(); W(OP); }
 
 ;.*
 !.*
-#.*
 
 [ \t\v\f]   {   count(); }
 

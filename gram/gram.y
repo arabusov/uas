@@ -1,26 +1,37 @@
-%token OP REG SYSREG REG8 IMMED CIMMED DISP CDISP LAB COL LPAR RPAR COM NL
+%token OP REG SYSREG REG8 IMMED CIMMED IDENT CDISP COL LPAR RPAR COM NL
 %%
-statement   : LAB cmd
-            | cmd
 
-cmd         : OP
-            | OP arg
-            | OP arg COM arg
-            | OP arg COM arg COM arg
+statements  : statements statement
+            | statement
 
-arg         : REG
+statement   : IDENT COL instr NL
+            | instr NL
+
+instr       : OP operands
+            | OP
+
+operands    : arg
+            | arg COM arg
+
+arg         : reg
             | IMMED
             | CIMMED
-            | DISP
+            | IDENT 
             | CDISP
             | modrm
 
+reg         : REG
+            | REG8
+            | SYSREG
+
 modrm       : SYSREG COL default_modrm
-            | direct_modrm
-direct_modrm: DISP default_modrm
-            | CDISP default_modrm
+            | default_modrm
 
 default_modrm
+            : IDENT direct_modrm
+            | CDISP direct_modrm
+
+direct_modrm
             : LPAR REG COM REG RPAR
             | LPAR REG COM RPAR
             | LPAR COM REG RPAR
