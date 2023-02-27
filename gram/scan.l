@@ -19,45 +19,25 @@ sub{ARGT}   |
 cmp{ARGT}   |
 push        |
 pop         |
-hlt         {   count(); W(OP); }
+hlt         {   count(); W(OP);     }
 
-\%ax        |
-\%bx        |
-\%cx        |
-\%dx        |
-\%si        |
-\%di        |
-\%sp        |
-\%bp        {   count(); W(REG); }
-\%cs        |
-\%ds        |
-\%ss        |
-\%es        {   count(); W(SYSREG); } 
-\%al        |
-\%bl        |
-\%cl        |
-\%dl        |
-\%ah        |
-\%bh        |
-\%ch        |
-\%dh        {   count(); W(REG8); }
+\%[a-d]x    |
+\%[sd]i     |
+\%[sb]p     {   count(); W(REG);    }
+\%[cdse]s   {   count(); W(SYSREG); }
+\%[a-d][lh] {   count(); W(REG8);   }
 
-,           {   count(); W(COM); }
-"\n"        {   count(); W(NL); }
+,           {   count(); W(',');    }
+"\n"        {   count(); W('\n');   }
+"("         {   count(); W('(');    }
+")"         {   count(); W(')');    }
+"$"         {   count(); W('$');    }
+":"         {   count(); W(':');    }
 
-"("         {   count(); W(LPAR); }
-
-")"         {   count(); W(RPAR); }
-
-\$[ \t]*{ID}    {   count(); W(IMMED); }
-\$[ \t]*{DEC}   |
-\$[ \t]*{HEX}   {   count(); W(CIMMED); }
-
-{ID}        {   count(); W(IDENT); }
+{ID}        {   count(); W(IDENT);  }
 {DEC}       |
-{HEX}       {   count(); W(CDISP); }
+{HEX}       {   count(); W(CONST);  }
 
-:           {   count(); W(COL); }
 
 ;.*
 !.*

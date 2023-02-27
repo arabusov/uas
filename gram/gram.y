@@ -1,40 +1,84 @@
-%token OP REG SYSREG REG8 IMMED CIMMED IDENT CDISP COL LPAR RPAR COM NL
+%token OP REG SYSREG REG8 IDENT CONST LPAR RPAR
 %%
 
 statements  : statements statement
             | statement
+            ;
 
-statement   : IDENT COL instr NL
-            | instr NL
+statement   : IDENT ':' instr '\n'
+            | instr '\n'
+            ;
 
 instr       : OP operands
             | OP
+            ;
 
 operands    : arg
-            | arg COM arg
+            | arg ',' arg
+            ;
 
 arg         : reg
-            | IMMED
-            | CIMMED
-            | IDENT 
-            | CDISP
+            | immediate
+            | disp
             | modrm
+            ;
+
+immediate   : '$' disp
+            ;
+
+disp        : IDENT
+            | CONST
+            | '(' expr ')'
+            ;
+
+unary_expr  :
+            | disp
+	        | '~' unary_expr
+	        ;
+
+mul_expr    : unary_expr
+            | mul_expr '*' unary_expr
+	        | mul_expr '/' unary_expr
+	        | mul_expr '%' unary_expr
+	        ;
+
+add_expr    : mul_expr
+            | add_expr '+' mul_expr
+            | add_expr '-' mul_expr
+            ;
+and_expr    : add_expr
+	        | and_expr '&' add_expr
+	        ;
+
+xor_expr    : and_expr
+            | xor_expr '^' and_expr
+            ;
+
+or_expr     : xor_expr
+	        | or_expr '|' xor_expr
+	        ;
+
+expr        : or_expr
+            ;
 
 reg         : REG
             | REG8
             | SYSREG
+            ;
 
-modrm       : SYSREG COL default_modrm
+modrm       : SYSREG ':' default_modrm
             | default_modrm
+            ;
 
 default_modrm
-            : IDENT direct_modrm
-            | CDISP direct_modrm
+            : disp direct_modrm
+            ;
 
 direct_modrm
-            : LPAR REG COM REG RPAR
-            | LPAR REG COM RPAR
-            | LPAR COM REG RPAR
+            : '(' REG ',' REG ')'
+            | '(' REG ',' ')'
+            | '(' ',' REG ')'
+            ;
 %%
 
 #include <stdio.h>
