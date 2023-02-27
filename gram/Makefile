@@ -23,3 +23,4 @@ clean:
 	rm -f *.o
 	rm -f lex.yy.c y.tab.c y.tab.h
 	rm -f test
+	rm -f as
