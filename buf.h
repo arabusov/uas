@@ -8,10 +8,12 @@
 #ifndef _BUF_
 #define _BUF_
 
-#define N_BUF       512
-extern char buf[N_BUF];
-extern char *bp;
+#define N_BUF   512
+extern char     buf[N_BUF];
+extern char     *bp;
+extern int      is_eof;
 
-extern int read_buf (void);
+extern int      read_buf(void);
+extern int      eob(char *p);
 
 #endif /* _BUF_ */
