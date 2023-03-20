@@ -8,7 +8,7 @@ FNAME   [a-zA-Z0-9\/\.]+
 #include "y.tab.h"
 int column=0;
 void count();
-#define W(T)  ECHO;  return (T);
+#define W(T)  ECHO; return (T);
 %}
 %%
 "# "{DEC}" "{FNAME}{CPPFL}*"\n"  {    printf("cpp %s\n", yytext); }
@@ -33,6 +33,9 @@ hlt         {   count(); W(OP);     }
 ")"         {   count(); W(')');    }
 "$"         {   count(); W('$');    }
 ":"         {   count(); W(':');    }
+\+         {   count(); W('+');    }
+\*         {   count(); W('*');    }
+\/         {   count(); W('/');    }
 
 {ID}        {   count(); W(IDENT);  }
 {DEC}       |

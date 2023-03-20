@@ -1,9 +1,11 @@
 YACC=yacc -d
-LDFLAGS=-fl
+LDFLAGS=-lfl
+LD=$(CC)
 
 all: as
 
 as: y.tab.o lex.yy.o
+	$(LD) $(LDFLAGS) -o $@ $^
 
 lex.yy.o: lex.yy.c
 

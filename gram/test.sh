@@ -17,3 +17,6 @@ echo "here: movw %es:0x89 (%bx, %si), %ax" | ./as
 echo
 echo "here: movw %es:there (%bx, %si), %ax"
 echo "here: movw %es:there (%bx, %si), %ax" | ./as
+echo
+echo "here: movw %es:(there+here) (%bx, %si), %ax"
+echo "here: movw %es:(there+here) (%bx, %si), %ax" | ./as
