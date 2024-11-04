@@ -22,7 +22,7 @@ struct symbol
         union {
                 int     int_lit;
                 char    *str_lit;
-                char    ident[IDENT_LEN];
+                char    ident[IDENT_LEN + 1];
         } val;
 };
 
@@ -31,6 +31,7 @@ extern struct symbol    *sp;
 
 extern void             init_symtab(void);
 extern int              eost(void);
+extern void             print_symbol(struct symbol *);
 
 #endif /* _SYM_H_ */
 

@@ -34,6 +34,6 @@ extern int read_buf(void)
 /* End of buffer */
 extern int eob(char *p)
 {
-        return (p - buf) >= N_BUF;
+        return (p - buf) >= N_BUF || *p == '\0';
 }
 

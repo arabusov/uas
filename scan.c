@@ -8,6 +8,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stddef.h>
 #include "scan.h"
 #include "buf.h"
 
@@ -20,20 +21,27 @@ static int is_lat(char ch)
 /* Returns true if character ch is either from the latin alph or '_' */
 static int is_lou(char ch)
 {
-        return is_lat || ch == '_';
+        return is_lat(ch) || ch == '_';
+}
+
+/* Returns true if character ch is a digit, asume ASCII */
+static int is_digit(char ch)
+{
+        return ch >= '0' && ch <= '9';
 }
 
 /* Checks if *p points to an identifier, returns 0 if not */
-static enum token ident(char **p, char **symb)
+static enum token ident(char **p, char **sym)
 {
         char *start = *p;
         if (eob(*p)) /* This should not happen */
                 return UNKNOWN;
-        if (is_lou(*p))
+        if (is_lou(**p))
                 (*p)++;
-        while (is_lou(*p) || is_digit(*p)) { 
+        while (is_lou(**p) || is_digit(**p)) {
                 (*p)++;
         }
+        *sym = start;
         return IDENT;
 }
 
@@ -48,25 +56,46 @@ static int is_wp(char ch)
  */
 static void skip_wsp(void)
 {
-        while (is_wp (*bp)) bp++;
+        while (is_wp(*bp)) bp++;
 }
+
+#define OPC_PAT(s,v) if (strcmp (*p, s) == 0) {\
+        (*p)[4] = '\0'; (*p) += 5; return v; }
 
 /*
  * Hardcoded opcode table
  */
 static enum token opc(char **p)
 {
-        if (is_wp ((*p)[4])) {
-                char ch = (*p)[4];
-                (*p)[4] = '\0';
-                if (strcmp (*p, "movb") == 0) { (*p) +=4; return **p = ch, MOVB; }
-                if (strcmp (*p, "movw") == 0) { (*p) +=4; return **p = ch, MOVW; }
-                if (strcmp (*p, "addb") == 0) { (*p) +=4; return **p = ch, ADDB; }
-                if (strcmp (*p, "addw") == 0) { (*p) +=4; return **p = ch, ADDW; }
+        if (is_wp((*p)[4])) {
+                OPC_PAT("movb", MOVB)
+                OPC_PAT("movw", MOVW)
+                OPC_PAT("addb", ADDB)
+                OPC_PAT("addw", ADDW)
         }
-        return 0;
+        return UNKNOWN;
 }
 
+#define DIRE(s,v) { if (strcmp (*p, s) == 0) { \
+        (*p)[g3l] = '\0'; (*p) += g3l + 1; return v; } }
+
+static ptrdiff_t slen(char *s)
+{
+        char *tmp = s;
+        while (!is_wp(*s++));
+        return s - tmp;
+}
+        
+/*
+ * Hardcoded directives table
+ */
+static enum token directive(char **p)
+{
+        size_t g3l = slen(*p);
+        DIRE(".byte", DB_BYTE);
+        return UNKNOWN;
+}
+        
 /*
  * Macro for generic registers, includes 16- and 8-bit variants
  */
@@ -136,17 +165,14 @@ extern enum token nextok(char **sym)
         if (is_eof)
                 return EOF;
         skip_wsp();
-        skip_comment();
         /* Default assumption: no symbol is associated with tok */
         *sym = NULL;
         /* If literal begins with nonzero, it is decimal */
         if (*bp >= '1' && *bp <= '9')
                 return dec(&bp);
-        if (bp == 0 && *bp == '#')
-                return pre_dir(&bp);
         switch (*bp) {
                 case EOF:       is_eof = 1; return EOF;
-                case '#':       return 
+                case '#':       return COMMENT;
                 case '%':       return bp++, reg(&bp);
                 case '.':       return bp++, directive(&bp);
                 case '0':       if (*++bp == 'x')
@@ -158,7 +184,7 @@ extern enum token nextok(char **sym)
         if (tmp) {
                 return tmp;
         }
-        tmp = ident (&bp);
+        tmp = ident(&bp, sym);
         if (tmp) {
                 return tmp;
         }

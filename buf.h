@@ -9,7 +9,7 @@
 #define _BUF_
 
 #define N_BUF   512
-extern char     buf[N_BUF];
+extern char     buf[N_BUF+2];
 extern char     *bp;
 extern int      is_eof;
 
