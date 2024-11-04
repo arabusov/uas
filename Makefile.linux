@@ -8,7 +8,7 @@ CFLAGS=-ansi -pedantic -Wall -Wextra -Werror -Wfatal-errors -g -ggdb
 LD=$(CC)
 LDFLAGS=-g -ggdb
 
-SRC=$(shell echo *.c)
+SRC=test.c scan.c buf.c
 OBJ=$(patsubst %.c, %.o, $(SRC))
 
 all: as

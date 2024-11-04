@@ -92,7 +92,8 @@ static ptrdiff_t slen(char *s)
 static enum token directive(char **p)
 {
         size_t g3l = slen(*p);
-        DIRE(".byte", DB_BYTE);
+        DIRE(".byte",   DR_BYTE);
+        DIRE(".org",    DR_ORG);
         return UNKNOWN;
 }
         
@@ -173,8 +174,8 @@ extern enum token nextok(char **sym)
         switch (*bp) {
                 case EOF:       is_eof = 1; return EOF;
                 case '#':       return COMMENT;
-                case '%':       return bp++, reg(&bp);
-                case '.':       return bp++, directive(&bp);
+                case '%':       bp++; return reg(&bp);
+                case '.':       bp++; return directive(&bp);
                 case '0':       if (*++bp == 'x')
                                         return bp += 2, hex(&bp);
                                 else
@@ -188,5 +189,5 @@ extern enum token nextok(char **sym)
         if (tmp) {
                 return tmp;
         }
-        return *bp++;
+        return UNKNOWN;
 }

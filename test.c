@@ -8,26 +8,20 @@
 #include <stdio.h>
 #include "scan.h"
 #include "buf.h"
-#include "sym.h"
 
 int main (void)
 {
         int buf_sta;
-        init_symtab();
         do {
-                struct symbol sym;
-                token_t tok;
-                buf_sta = read_buf ();
-                puts (buf);
+                enum token tok;
+                buf_sta = read_buf();
+                printf("%s", buf);
                 do {
+                        char *sym;
                         printf("pos = %d,", (int)(bp-buf));
-                        tok = next_tok(sym);
+                        tok = nextok(&sym);
                         printf(" token = %d", tok);
-                        if (symbol.type != NO_SYMBOL) {
-                                printf(", sym = ");
-                                print_symbol(symbol);
-                                printf("\n");
-                        }
+                        printf(" sym = %s\n", sym);
                 } while ((int)tok > 0);
         } while (buf_sta);
         return 0;

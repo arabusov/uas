@@ -15,7 +15,8 @@
     ADDB, ADDW
 
 #define DIR_MACRO \
-        DB_BYTE
+        DR_BYTE, \
+        DR_ORG
 
 #define REG8_MACRO \
     R_AL, R_CL, R_DL, R_BL, R_AH, R_CH, R_DH, R_BH
